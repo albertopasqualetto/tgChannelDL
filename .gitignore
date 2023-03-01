@@ -1,5 +1,6 @@
 .env
 
 *.session
+*.session-journal
 
-*.mp4
+/downloads/
