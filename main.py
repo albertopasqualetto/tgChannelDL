@@ -17,7 +17,7 @@ def download_from_chat(client, chat_id):
     messages = client.get_messages(entity=chat_id)
     messages.reverse()  # Download from oldest to newest
     for m in messages:
-        if not m.file:
+        if m.action or not m.file:
             continue
 
         global pbar
