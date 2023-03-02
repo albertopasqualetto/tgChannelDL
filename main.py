@@ -16,13 +16,13 @@ def callback(current, total):
 def download_from_chat(client, chat_id):
     messages = client.get_messages(entity=chat_id)
     messages.reverse()  # Download from oldest to newest
-    for m in messages:
+    for idm, m in enumerate(messages):
         if m.action or not m.file:
             continue
 
         global pbar
         pbar = tqdm(total=m.file.size, unit='B', unit_scale=True, unit_divisor=1024, desc="Downloading")
-        filename = m.file.name if m.file.name else m.file.id
+        filename = m.file.name if m.file.name else m.file.id+" ({})".format(idm)   # cannot download images
         pbar.set_description("Downloading " + filename)
         client.download_media(m, progress_callback=callback, file="./downloads/"+filename)
         pbar.close()
