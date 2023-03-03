@@ -4,3 +4,5 @@
 *.session-journal
 
 /downloads/
+*.mp4
+*.mkv

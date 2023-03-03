@@ -1,4 +1,5 @@
 import os
+import sys
 from tqdm import tqdm
 from dotenv import load_dotenv
 from telethon.sync import TelegramClient
@@ -7,6 +8,10 @@ from telethon.sync import TelegramClient
 
 load_dotenv()
 
+# if resuming download, set old_id to the last downloaded file id
+old_id  = 0
+if len(sys.argv) > 1:
+    old_id = int(sys.argv[1])
 
 def callback(current, total):
     global pbar
@@ -22,7 +27,7 @@ def download_from_chat(client, chat_id):
 
         global pbar
         pbar = tqdm(total=m.file.size, unit='B', unit_scale=True, unit_divisor=1024, desc="Downloading")
-        filename = m.file.name if m.file.name else m.file.id+" ({})".format(idm)   # cannot download images
+        filename = m.file.name if m.file.name else m.file.id+" ({})".format(idm+old_id)   # cannot download images
         pbar.set_description("Downloading " + filename)
         client.download_media(m, progress_callback=callback, file="./downloads/"+filename)
         pbar.close()
