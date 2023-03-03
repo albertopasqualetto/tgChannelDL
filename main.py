@@ -29,14 +29,13 @@ def download_from_chat(client, chat_id):
         if m.action or not m.file:  # skip messages without files
             continue
 
-        if len(sys.argv) > 1 and sys.argv[1] == "resume":
-            number = idm
-        elif len(sys.argv) > 1 and sys.argv[1] == "restart":
+        number = idm
+        if len(sys.argv) > 1 and sys.argv[1] == "restart":
             number = idm + old_id
 
         global pbar
         pbar = tqdm(total=m.file.size, unit='B', unit_scale=True, unit_divisor=1024, desc="Downloading")
-        filename = m.file.name if m.file.name else m.file.id+" ({})".format(number)   # cannot download images
+        filename = m.file.name if m.file.name else "({})".format(number)+m.file.id  # cannot download images
         pbar.set_description("Downloading " + filename)
         client.download_media(m, progress_callback=callback, file="./downloads/"+filename)
         pbar.close()
