@@ -1,5 +1,5 @@
-import os
 import sys
+import os
 from tqdm import tqdm
 from dotenv import load_dotenv
 from telethon.sync import TelegramClient
@@ -8,10 +8,11 @@ from telethon.sync import TelegramClient
 
 load_dotenv()
 
-# if resuming download, set old_id to the last downloaded file id
-old_id  = 0
+# if resuming download from a certain point, set manually argv[1]=old_id to the last downloaded file id
+old_id = 0
 if len(sys.argv) > 1:
     old_id = int(sys.argv[1])
+
 
 def callback(current, total):
     global pbar
@@ -21,8 +22,10 @@ def callback(current, total):
 def download_from_chat(client, chat_id):
     messages = client.get_messages(entity=chat_id)
     messages.reverse()  # Download from oldest to newest
-    for idm, m in enumerate(messages):
-        if m.action or not m.file:
+    for idm, m in enumerate(messages):  # idm[0] is always the channel creation message
+        if idm < old_id:    # skip already downloaded files
+            continue
+        if m.action or not m.file:  # skip messages without files
             continue
 
         global pbar
